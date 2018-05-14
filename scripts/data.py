@@ -1,16 +1,68 @@
 import pandas as pd
 import plotly.graph_objs as go
+from collections import OrderedDict
+import requests
 
-def return_figures():
+  # indictaors = ['AG.LND.ARBL.HA', 'AG.LND.FRST.K2', 'SP.RUR.TOTL']
+  # country_codes = {'Canada':'CAN',
+  # 'United States':'USA',
+  # 'Brazil':'BRA',
+  # 'France':'FRA',
+  # 'India':'IND',
+  # 'Italy':'ITA',
+  # 'Germany':'DEU',
+  # 'United Kingdom':'GBR',
+  # 'China':'CHN',
+  # 'Japan':'JPA'}
 
-  # first chart code
+
+  # http://api.worldbank.org/v2/countries/usa;bra/indicators/AG.LND.ARBL.HA?date=1990:2015&per_page=1000&format=json
+
+# default list of all countries - in other words no filter
+country_default = OrderedDict([('Canada', 'CAN'), ('United States', 'USA'), 
+  ('Brazil', 'BRA'), ('France', 'FRA'), ('India', 'IND'), ('Italy', 'ITA'), 
+  ('Germany', 'DEU'), ('United Kingdom', 'GBR'), ('China', 'CHN'), ('Japan', 'JPN')])
+
+def return_figures(countries=country_default):
+
+  # prepare filter data
+  country_filter = list(countries.values())
+  country_filter = [x.lower() for x in country_filter]
+  country_filter = ';'.join(country_filter)
+
+  # create urls for the indicators of interest with the country filter
+  indicators = ['AG.LND.ARBL.HA.PC', 'SP.RUR.TOTL.ZS', 'SP.RUR.TOTL', 'AG.LND.FRST.K2']
+  urls = []
+
+  # store the data frames with the indicator data of interest
+  data_frames = []
+
+  # get and clean data
+  for indicator in indicators:
+    url = 'http://api.worldbank.org/v2/countries/' + country_filter +\
+    '/indicators/' + indicator + '?date=1990:2015&per_page=1000&format=json'
+    urls.append(url)
+
+    try:
+      r = requests.get(url)
+      data = r.json()[1]
+    except:
+      print('could not load data ', indicator)
+
+    for i, value in enumerate(data):
+      value['indicator'] = value['indicator']['value']
+      value['country'] = value['country']['value']
+
+    data_frames.append(data)
+  
   graph_one = []
-  df = pd.read_csv('data/API_AG.LND.ARBL.HA.PC_DS2_en_csv_v2_clean.csv')
-  df.sort_values('hectaresarablelandperperson', ascending=False, inplace=True)
-  countrylist = df.country.unique().tolist()
+  df_one = pd.DataFrame(data_frames[0])
+  df_one = df_one[(df_one['date'] == '2015') | (df_one['date'] == '1990')]
+  df_one.sort_values('value', ascending=False, inplace=True)
+  countrylist = df_one.country.unique().tolist()
   for country in countrylist:
-      x_val = df[df['country'] == country].year.tolist()
-      y_val =  df[df['country'] == country].hectaresarablelandperperson.tolist()
+      x_val = df_one[df_one['country'] == country].date.tolist()
+      y_val =  df_one[df_one['country'] == country].value.tolist()
       graph_one.append(
           go.Scatter(
           x = x_val,
@@ -28,14 +80,13 @@ def return_figures():
 
   # second chart code
   graph_two = []
-  df = pd.read_csv('data/API_AG.LND.ARBL.HA.PC_DS2_en_csv_v2_clean.csv')
-  df.sort_values('hectaresarablelandperperson', ascending=False, inplace=True)
-  df = df[df['year'] == 2015] 
+  df_one.sort_values('value', ascending=False, inplace=True)
+  df_one = df_one[df_one['date'] == '2015'] 
 
   graph_two.append(
       go.Bar(
-      x = df.country.tolist(),
-      y = df.hectaresarablelandperperson.tolist(),
+      x = df_one.country.tolist(),
+      y = df_one.value.tolist(),
       )
   )
 
@@ -47,11 +98,14 @@ def return_figures():
 
   # third chart code
   graph_three = []
-  df = pd.read_csv('data/API_SP.RUR.TOTL.ZS_DS2_en_csv_v2_clean.csv')
-  df.sort_values('percentrural', ascending=False, inplace=True)
+  df_three = pd.DataFrame(data_frames[1])
+  df_three = df_three[(df_three['date'] == '2015') | (df_three['date'] == '1990')]
+
+  # df = pd.read_csv('data/API_SP.RUR.TOTL.ZS_DS2_en_csv_v2_clean.csv')
+  df_three.sort_values('value', ascending=False, inplace=True)
   for country in countrylist:
-      x_val = df[df['country'] == country].year.tolist()
-      y_val =  df[df['country'] == country].percentrural.tolist()
+      x_val = df_three[df_three['country'] == country].date.tolist()
+      y_val =  df_three[df_three['country'] == country].value.tolist()
       graph_three.append(
           go.Scatter(
           x = x_val,
@@ -69,16 +123,19 @@ def return_figures():
 
   # fourth chart code
   graph_four = []
-  df_one = pd.read_csv('data/API_SP.RUR.TOTL_DS2_en_csv_v2_9914824_clean.csv')
-  df_two = pd.read_csv('data/API_AG.LND.FRST.K2_DS2_en_csv_v2_9910393_clean.csv')
+  df_four_a = pd.DataFrame(data_frames[2])
+  df_four_a = df_four_a[['country', 'date', 'value']]
+  
+  df_four_b = pd.DataFrame(data_frames[3])
+  df_four_b = df_four_b[['country', 'date', 'value']]
 
-  df = df_one.merge(df_two, on=['country', 'year'])
+  df_four = df_four_a.merge(df_four_b, on=['country', 'date'])
 
   for country in countrylist:
-      x_val = df[df['country'] == country].variable_x.tolist()
-      y_val = df[df['country'] == country].variable_y.tolist()
-      year = df[df['country'] == country].year.tolist()
-      country_label = df[df['country'] == country].country.tolist()
+      x_val = df_four[df_four['country'] == country].value_x.tolist()
+      y_val = df_four[df_four['country'] == country].value_y.tolist()
+      year = df_four[df_four['country'] == country].date.tolist()
+      country_label = df_four[df_four['country'] == country].country.tolist()
 
       text = []
       for country, year in zip(country_label, year):
@@ -95,7 +152,7 @@ def return_figures():
           )
       )
 
-  layout_four = dict(title = 'Rural Population versus <br> Forested Area (square km)',
+  layout_four = dict(title = 'Rural Population versus <br> Forested Area (square km) 1990-2015',
                 xaxis = dict(title = 'Rural Population'),
                 yaxis = dict(title = 'Forest Area (square km)'),
                 )

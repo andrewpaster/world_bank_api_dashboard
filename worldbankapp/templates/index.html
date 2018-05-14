@@ -59,11 +59,11 @@
 			
 		</div>
 		
-
+		<hr>
 		<!-- dropdown menu -->
 		<div class="dropdown">
 		  		
-	  		<button class="btn btn-secondary btn-lg dropdown-toggle" type="button" 
+	  		<button class="btn btn-danger btn-lg dropdown-toggle" type="button" 
 	  		id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" 
 	  		aria-expanded="false">Filter by country</button>
 	  		
@@ -75,7 +75,6 @@
 					  		<input class="form-check-input" type="checkbox" name="{{ country[0] }}" value="{{ country[1] }}" id="defaultCheck1" checked>
 					  		<label class="form-check-label" for="defaultCheck1">{{country[0]}}</label>
 						</div>
-
 					{% endfor %}
 		  		
 		  			<button id="country_selector" type="submit" class="btn btn-primary my-1">Submit</button>
@@ -121,7 +120,6 @@
 
 
 <footer>
-
     <script type="text/javascript">
     	// plots the figure with id
     	// id much match the div id above in the html
