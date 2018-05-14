@@ -25,6 +25,9 @@ country_default = OrderedDict([('Canada', 'CAN'), ('United States', 'USA'),
 
 def return_figures(countries=country_default):
 
+  if not bool(countries):
+    countries = country_default
+
   # prepare filter data
   country_filter = list(countries.values())
   country_filter = [x.lower() for x in country_filter]
