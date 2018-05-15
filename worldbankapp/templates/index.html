@@ -71,13 +71,16 @@
 	  		<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 				<form class="px-4 py-3" role="form" method="post" action="/">
 			
-					{% for country in countries %}
+					{% for country in all_countries %}
 						<div class="form-check">
-					  		<input class="form-check-input" type="checkbox" name="{{ country[0] }}" value="{{ country[1] }}" id="defaultCheck1" checked>
-					  		<label class="form-check-label" for="defaultCheck1">{{country[0]}}</label>
+							{% if country[1] in countries_selected %}
+						  		<input class="form-check-input" type="checkbox" name="{{ country[0] }}" value="{{ country[1] }}" id="defaultCheck1-{{country[1]}}" checked>
+							{% else %}
+						  		<input class="form-check-input" type="checkbox" name="{{ country[0] }}" value="{{ country[1] }}" id="defaultCheck1-{{country[1]}}">							
+							{% endif %}
+					  		<label class="form-check-label" for="defaultCheck1-{{country[1]}}">{{country[0]}}</label>
 						</div>
 					{% endfor %}
-		  		
 		  			<button id="country_selector" type="submit" class="btn btn-primary my-1">Submit</button>
 				</form>
 			</div>

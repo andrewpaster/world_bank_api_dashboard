@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import plotly.graph_objs as go
 from collections import OrderedDict
 import requests
@@ -133,22 +134,29 @@ def return_figures(countries=country_default):
   df_four_b = df_four_b[['country', 'date', 'value']]
 
   df_four = df_four_a.merge(df_four_b, on=['country', 'date'])
-
+  df_four.sort_values('date', ascending=True, inplace=True)
+  
   for country in countrylist:
       x_val = df_four[df_four['country'] == country].value_x.tolist()
       y_val = df_four[df_four['country'] == country].value_y.tolist()
-      year = df_four[df_four['country'] == country].date.tolist()
+      years = df_four[df_four['country'] == country].date.tolist()
       country_label = df_four[df_four['country'] == country].country.tolist()
 
       text = []
-      for country, year in zip(country_label, year):
+      for country, year in zip(country_label, years):
           text.append(str(country) + ' ' + str(year))
 
+      color_scale = np.linspace(100, 255, len(years))
+      print([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+      print(color_scale)
+      print(years)
       graph_four.append(
           go.Scatter(
           x = x_val,
           y = y_val,
           mode = 'markers',
+          marker=dict(
+            color=color_scale),
           text = text,
           name = country,
           textposition = 'top'

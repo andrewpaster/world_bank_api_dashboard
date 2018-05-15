@@ -9,10 +9,21 @@ from scripts.data import return_figures
 @app.route('/index', methods=['POST', 'GET'])
 def index():
 
+	# List of countries for filter
+	country_codes = [['Canada','CAN'],['United States','USA'],['Brazil','BRA'],
+	['France','FRA'],['India','IND'],['Italy','ITA'],['Germany','DEU'],
+	['United Kingdom','GBR'],['China','CHN'],['Japan','JPN']]
+
 	if (request.method == 'POST'):
 		figures = return_figures(request.form)
+		countries_selected = []
+		for country in request.form.lists():
+			countries_selected.append(country[1][0])
 	else:
 		figures = return_figures()
+		countries_selected = []
+		for country in country_codes:
+			countries_selected.append(country[1])
 
 	# see: https://github.com/plotly/plotlyjs-flask-example/blob/master/app.py
 	# add ids to each figure
@@ -21,11 +32,7 @@ def index():
 	# Convert the plotly figures to JSON for javascript in html template
 	figuresJSON = json.dumps(figures, cls=plotly.utils.PlotlyJSONEncoder)
 
-	# List of countries for filter
-	country_codes = [['Canada','CAN'],['United States','USA'],['Brazil','BRA'],
-	['France','FRA'],['India','IND'],['Italy','ITA'],['Germany','DEU'],
-	['United Kingdom','GBR'],['China','CHN'],['Japan','JPN']]
-
 	return render_template('index.html', ids=ids,
 		figuresJSON=figuresJSON,
-		countries=country_codes)
+		all_countries=country_codes,
+		countries_selected=countries_selected)
