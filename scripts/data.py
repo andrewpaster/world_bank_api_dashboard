@@ -36,7 +36,9 @@ def return_figures(countries=country_default):
   country_filter = ';'.join(country_filter)
 
   # create urls for the indicators of interest with the country filter
-  indicators = ['AG.LND.ARBL.HA.PC', 'SP.RUR.TOTL.ZS', 'SP.RUR.TOTL', 'AG.LND.FRST.K2']
+  # indicators = ['AG.LND.ARBL.HA.PC', 'SP.RUR.TOTL.ZS', 'SP.RUR.TOTL', 'AG.LND.FRST.K2']
+  indicators = ['AG.LND.ARBL.HA.PC', 'SP.RUR.TOTL.ZS', 'SP.RUR.TOTL.ZS', 'AG.LND.FRST.ZS']
+
   urls = []
 
   # store the data frames with the indicator data of interest
@@ -157,16 +159,16 @@ def return_figures(countries=country_default):
           go.Scatter(
           x = x_val,
           y = y_val,
-          mode = 'markers',
+          mode = 'lines+markers',
           text = text,
           name = country,
           textposition = 'top'
           )
       )
 
-  layout_four = dict(title = 'Rural Population versus <br> Forested Area (square km) 1990-2015',
-                xaxis = dict(title = 'Rural Population'),
-                yaxis = dict(title = 'Forest Area (square km)'),
+  layout_four = dict(title = '% of Population that is Rural versus <br> Percent of Land that is Forested <br> 1990-2015',
+                xaxis = dict(title = '% Population that is Rural', range=[0,100], dtick=10),
+                yaxis = dict(title = '% of Area that is Forested', range=[0,100], dtick=10),
                 )
 
 
