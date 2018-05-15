@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import plotly.graph_objs as go
+import plotly.colors
 from collections import OrderedDict
 import requests
 
@@ -126,6 +127,7 @@ def return_figures(countries=country_default):
                 )
 
   # fourth chart code
+
   graph_four = []
   df_four_a = pd.DataFrame(data_frames[2])
   df_four_a = df_four_a[['country', 'date', 'value']]
@@ -135,8 +137,13 @@ def return_figures(countries=country_default):
 
   df_four = df_four_a.merge(df_four_b, on=['country', 'date'])
   df_four.sort_values('date', ascending=True, inplace=True)
-  
-  for country in countrylist:
+
+  plotly_default_colors = plotly.colors.DEFAULT_PLOTLY_COLORS
+
+  for i, country in enumerate(countrylist):
+
+      current_color = []
+
       x_val = df_four[df_four['country'] == country].value_x.tolist()
       y_val = df_four[df_four['country'] == country].value_y.tolist()
       years = df_four[df_four['country'] == country].date.tolist()
@@ -146,17 +153,11 @@ def return_figures(countries=country_default):
       for country, year in zip(country_label, years):
           text.append(str(country) + ' ' + str(year))
 
-      color_scale = np.linspace(100, 255, len(years))
-      print([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-      print(color_scale)
-      print(years)
       graph_four.append(
           go.Scatter(
           x = x_val,
           y = y_val,
           mode = 'markers',
-          marker=dict(
-            color=color_scale),
           text = text,
           name = country,
           textposition = 'top'

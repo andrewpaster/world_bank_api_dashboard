@@ -68,15 +68,22 @@
 	  		id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" 
 	  		aria-expanded="false">Filter by country</button>
 	  		
-	  		<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-				<form class="px-4 py-3" role="form" method="post" action="/">
-			
+	  		<div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="check-boxes">
+				<div class="form-check ml-3">
+					{% if countries_selected|length == 10 %}
+						<input class="form-check-input" type="checkbox" name="Select All" value="selectall" id="select-all-check" checked>
+					{% else %}
+						<input class="form-check-input" type="checkbox" name="Select All" value="selectall" id="select-all-check">
+					{% endif %}
+				  	<label class="form-check-label" for="select-all-check">Select All</label>
+				</div>
+				<form class="px-4 py-3" role="form" method="post" action="/" id="form-filter">
 					{% for country in all_countries %}
 						<div class="form-check">
 							{% if country[1] in countries_selected %}
-						  		<input class="form-check-input" type="checkbox" name="{{ country[0] }}" value="{{ country[1] }}" id="defaultCheck1-{{country[1]}}" checked>
+						  		<input class="form-check-input country-check" type="checkbox" name="{{ country[0] }}" value="{{ country[1] }}" id="defaultCheck1-{{country[1]}}" checked>
 							{% else %}
-						  		<input class="form-check-input" type="checkbox" name="{{ country[0] }}" value="{{ country[1] }}" id="defaultCheck1-{{country[1]}}">							
+						  		<input class="form-check-input country-check" type="checkbox" name="{{ country[0] }}" value="{{ country[1] }}" id="defaultCheck1-{{country[1]}}">							
 							{% endif %}
 					  		<label class="form-check-label" for="defaultCheck1-{{country[1]}}">{{country[0]}}</label>
 						</div>
@@ -133,7 +140,25 @@
 			Plotly.plot(ids[i],
 				figures[i].data,
 				figures[i].layout || {});
-		}
+		};
+
+		// checks or unchecks the filter boxes based on the select all box
+        $("#select-all-check").change(function () {
+        	$("#check-boxes input:checkbox").prop('checked', $(this).prop('checked'));
+        });
+
+		$("#form-filter").change(function () {
+			if (!$(this).prop('checked')) {
+				$("#select-all-check").prop('checked', false);
+			}
+		});
+
+		$("#form-filter").change(function () {
+			if ($(".country-check:checked").length == $('.form-check').length - 1) {
+				$("#select-all-check").prop('checked', true);
+			}
+		});
+
     </script>
 
 </footer>
