@@ -14,11 +14,13 @@ def index():
 	['France','FRA'],['India','IND'],['Italy','ITA'],['Germany','DEU'],
 	['United Kingdom','GBR'],['China','CHN'],['Japan','JPN']]
 
-	if (request.method == 'POST'):
+	if (request.method == 'POST') and request.form:
 		figures = return_figures(request.form)
 		countries_selected = []
+
 		for country in request.form.lists():
 			countries_selected.append(country[1][0])
+
 	else:
 		figures = return_figures()
 		countries_selected = []
