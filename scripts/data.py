@@ -166,7 +166,7 @@ def return_figures(countries=country_default):
           )
       )
 
-  layout_four = dict(title = '% of Population that is Rural versus <br> Percent of Land that is Forested <br> 1990-2015',
+  layout_four = dict(title = '% of Population that is Rural versus <br> % of Land that is Forested <br> 1990-2015',
                 xaxis = dict(title = '% Population that is Rural', range=[0,100], dtick=10),
                 yaxis = dict(title = '% of Area that is Forested', range=[0,100], dtick=10),
                 )
