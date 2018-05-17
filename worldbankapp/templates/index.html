@@ -3,18 +3,20 @@
 <html>
 
 <head>
-	<title>World Bank Data Dashboard</title>
 
-	<!--import script files needed fro plotly and bootstrap-->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<title>World Bank Data Dashboard</title>
+
+<!--import script files needed fro plotly and bootstrap-->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>	
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 </head>
 
 <body>
+
 <!--navbar links-->		
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
    <a class="navbar-brand" href="#">World Bank Dashboard</a>
@@ -37,7 +39,7 @@
 <!--middle section-->		
 <div class="row">
 
-	<!--follow me link column-->		
+	<!--social media buttons column-->		
 	<div class="col-1 border-right">
 		<div id="follow-me" class="mt-3">
 			<a href="#">
@@ -61,7 +63,8 @@
 		</div>
 		
 		<hr>
-		<!-- dropdown menu -->
+
+		<!-- dropdown menu for filter -->
 		<div class="dropdown">
 		  		
 	  		<button class="btn btn-danger btn-lg dropdown-toggle" type="button" 
@@ -70,6 +73,7 @@
 	  		
 	  		<div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="check-boxes">
 				<div class="form-check ml-3">
+					<!-- Check the select-all box if all countries were submitted from the form -->
 					{% if countries_selected|length == 10 %}
 						<input class="form-check-input" type="checkbox" name="Select All" value="selectall" id="select-all-check" checked>
 					{% else %}
@@ -80,6 +84,7 @@
 				<form class="px-4 py-3" role="form" method="post" action="/" id="form-filter">
 					{% for country in all_countries %}
 						<div class="form-check">
+							<!-- Check the country filter boxes for all countries submitted from the form -->
 							{% if country[1] in countries_selected %}
 						  		<input class="form-check-input country-check" type="checkbox" name="{{ country[0] }}" value="{{ country[1] }}" id="defaultCheck1-{{country[1]}}" checked>
 							{% else %}
@@ -132,7 +137,7 @@
 
 <footer>
     <script type="text/javascript">
-    	// plots the figure with id
+    	// plots the figure by id using Plotly
     	// id much match the div id above in the html
     	var figures = {{figuresJSON | safe}};
 		var ids = {{ids | safe}};
@@ -147,12 +152,14 @@
         	$("#check-boxes input:checkbox").prop('checked', $(this).prop('checked'));
         });
 
+		// uncheck select-all box when unchecking another box
 		$("#form-filter").change(function () {
 			if (!$(this).prop('checked')) {
 				$("#select-all-check").prop('checked', false);
 			}
 		});
 
+		// check select-all box when re-checking all of the other boxes
 		$("#form-filter").change(function () {
 			if ($(".country-check:checked").length == $('.form-check').length - 1) {
 				$("#select-all-check").prop('checked', true);

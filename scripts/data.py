@@ -5,46 +5,46 @@ import plotly.colors
 from collections import OrderedDict
 import requests
 
-  # indictaors = ['AG.LND.ARBL.HA', 'AG.LND.FRST.K2', 'SP.RUR.TOTL']
-  # country_codes = {'Canada':'CAN',
-  # 'United States':'USA',
-  # 'Brazil':'BRA',
-  # 'France':'FRA',
-  # 'India':'IND',
-  # 'Italy':'ITA',
-  # 'Germany':'DEU',
-  # 'United Kingdom':'GBR',
-  # 'China':'CHN',
-  # 'Japan':'JPA'}
 
-
-  # http://api.worldbank.org/v2/countries/usa;bra/indicators/AG.LND.ARBL.HA?date=1990:2015&per_page=1000&format=json
-
-# default list of all countries - in other words no filter
+# default list of all countries of interest
 country_default = OrderedDict([('Canada', 'CAN'), ('United States', 'USA'), 
   ('Brazil', 'BRA'), ('France', 'FRA'), ('India', 'IND'), ('Italy', 'ITA'), 
   ('Germany', 'DEU'), ('United Kingdom', 'GBR'), ('China', 'CHN'), ('Japan', 'JPN')])
 
-def return_figures(countries=country_default):
 
+def return_figures(countries=country_default):
+    """Creates four plotly visualizations using the World Bank API
+
+  # Example of the World Bank API endpoint:
+  # arable land for the United States and Brazil from 1990 to 2015
+  # http://api.worldbank.org/v2/countries/usa;bra/indicators/AG.LND.ARBL.HA?date=1990:2015&per_page=1000&format=json
+
+    Args:
+        country_default (dict): list of countries for filtering the data
+
+    Returns:
+        list (dict): list containing the four plotly visualizations
+
+    """
+
+  # when the countries variable is empty, use the country_default dictionary
   if not bool(countries):
     countries = country_default
 
-  # prepare filter data
+  # prepare filter data for World Bank API
+  # the API uses ISO-3 country codes separated by ;
   country_filter = list(countries.values())
   country_filter = [x.lower() for x in country_filter]
   country_filter = ';'.join(country_filter)
 
-  # create urls for the indicators of interest with the country filter
-  # indicators = ['AG.LND.ARBL.HA.PC', 'SP.RUR.TOTL.ZS', 'SP.RUR.TOTL', 'AG.LND.FRST.K2']
+  # World Bank indicators of interest for pulling data
   indicators = ['AG.LND.ARBL.HA.PC', 'SP.RUR.TOTL.ZS', 'SP.RUR.TOTL.ZS', 'AG.LND.FRST.ZS']
 
-  urls = []
+  data_frames = [] # stores the data frames with the indicator data of interest
+  urls = [] # url endpoints for the World Bank API
 
-  # store the data frames with the indicator data of interest
-  data_frames = []
-
-  # get and clean data
+  # pull data from World Bank API and clean the resulting json
+  # results stored in data_frames variable
   for indicator in indicators:
     url = 'http://api.worldbank.org/v2/countries/' + country_filter +\
     '/indicators/' + indicator + '?date=1990:2015&per_page=1000&format=json'
@@ -62,11 +62,20 @@ def return_figures(countries=country_default):
 
     data_frames.append(data)
   
+  # first chart plots arable land from 1990 to 2015 in top 10 economies 
+  # as a line chart
   graph_one = []
   df_one = pd.DataFrame(data_frames[0])
+
+  # filter and sort values for the visualization
+  # filtering plots the countries in decreasing order by their values
   df_one = df_one[(df_one['date'] == '2015') | (df_one['date'] == '1990')]
   df_one.sort_values('value', ascending=False, inplace=True)
+
+  # this  country list is re-used by all the charts to ensure legends have the same
+  # order and color
   countrylist = df_one.country.unique().tolist()
+  
   for country in countrylist:
       x_val = df_one[df_one['country'] == country].date.tolist()
       y_val =  df_one[df_one['country'] == country].value.tolist()
@@ -85,7 +94,7 @@ def return_figures(countries=country_default):
                 yaxis = dict(title = 'Hectares'),
                 )
 
-  # second chart code
+  # second chart plots ararble land for 2015 as a bar chart
   graph_two = []
   df_one.sort_values('value', ascending=False, inplace=True)
   df_one = df_one[df_one['date'] == '2015'] 
@@ -102,13 +111,11 @@ def return_figures(countries=country_default):
                 yaxis = dict(title = 'Hectares per person'),
                 )
 
-
-  # third chart code
+  # third chart plots percent of population that is rural from 1990 to 2015
   graph_three = []
   df_three = pd.DataFrame(data_frames[1])
   df_three = df_three[(df_three['date'] == '2015') | (df_three['date'] == '1990')]
 
-  # df = pd.read_csv('data/API_SP.RUR.TOTL.ZS_DS2_en_csv_v2_clean.csv')
   df_three.sort_values('value', ascending=False, inplace=True)
   for country in countrylist:
       x_val = df_three[df_three['country'] == country].date.tolist()
@@ -128,8 +135,7 @@ def return_figures(countries=country_default):
                 yaxis = dict(title = 'Percent'),
                 )
 
-  # fourth chart code
-
+  # fourth chart shows rural population vs arable land as percents
   graph_four = []
   df_four_a = pd.DataFrame(data_frames[2])
   df_four_a = df_four_a[['country', 'date', 'value']]
