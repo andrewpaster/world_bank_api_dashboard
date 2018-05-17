@@ -13,7 +13,7 @@ country_default = OrderedDict([('Canada', 'CAN'), ('United States', 'USA'),
 
 
 def return_figures(countries=country_default):
-    """Creates four plotly visualizations using the World Bank API
+  """Creates four plotly visualizations using the World Bank API
 
   # Example of the World Bank API endpoint:
   # arable land for the United States and Brazil from 1990 to 2015
@@ -25,7 +25,7 @@ def return_figures(countries=country_default):
     Returns:
         list (dict): list containing the four plotly visualizations
 
-    """
+  """
 
   # when the countries variable is empty, use the country_default dictionary
   if not bool(countries):
