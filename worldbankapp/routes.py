@@ -21,6 +21,7 @@ def index():
 
 		for country in request.form.lists():
 			countries_selected.append(country[1][0])
+	
 	# GET request returns all countries for initial page load
 	else:
 		figures = return_figures()
