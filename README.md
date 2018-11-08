@@ -2,7 +2,7 @@
 
 This is a python Flask app data dashboard that pulls data from the World Bank API. The visualizations are made with the plotly library.
 
-Here is a working version of the app: [https://world-bank-dashboard-api.herokuapp.com](https://world-bank-dashboard-api.herokuapp.com)
+Here is a working version of the app: [https://worldbank-api-flask-dashboard.herokuapp.com/](https://worldbank-api-flask-dashboard.herokuapp.com/)
 
 # Getting Started
 
@@ -21,23 +21,17 @@ You will need [Python3 installed](https://www.python.org/downloads/) on your loc
 
 # Deployment
 
-This flask app can be used as a template for visualizing your own data. Use
-the template to enhance your professional portfolio. 
+Flask apps can be deployed to a variety of platforms. Here is an example for deploying the web app with Heroku.
 
-## Prerequisites
+1. Install the Heroku [command line interface](https://devcenter.heroku.com/articles/getting-started-with-python#set-up)
+2. Then, in the command line enter `heroku login` and enter your account name and password
+3. Cd into the world_bank_api_dashboard repository folder
+4. In the command line, enter `heroku create`
+5. Then enter `git push heroku master`
+6. And finally 'heroku open'
 
-To install the flask app, you need:
-- python3
-- python packages in the requirements.txt file
- 
- Install the packages with
-``` 
- pip install -r requirements.txt
-```
-
-## Installing
-
-On a MacOS/linux system, installation is easy. Open a terminal, and go into 
-the directory with the flask app files.  
-
-## TODO Fill out the rest of the instructions
+# Built With
+* [Python](https://www.python.org/)
+* [Flask](http://flask.pocoo.org/)
+* [Pandas](https://pandas.pydata.org/)
+* [Plotly](https://plot.ly/python/)
