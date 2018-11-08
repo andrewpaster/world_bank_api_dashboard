@@ -31,7 +31,7 @@ Flask apps can be deployed to a variety of platforms. Here is an example for dep
 6. And finally 'heroku open'
 
 # Built With
-* [Python](https://www.python.org/)
-* [Flask](http://flask.pocoo.org/)
-* [Pandas](https://pandas.pydata.org/)
-* [Plotly](https://plot.ly/python/)
+* [Python](https://www.python.org/) - programming language
+* [Flask](http://flask.pocoo.org/) - web development framework
+* [Pandas](https://pandas.pydata.org/) - data manipulation and analysis
+* [Plotly](https://plot.ly/python/) - data visualization library
